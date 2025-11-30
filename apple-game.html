@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사과 게임 🍎</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .score-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid #333;
+            margin-bottom: 1rem;
+        }
+
+        .basket {
+            position: absolute;
+            bottom: 20px;
+            width: 120px;
+            height: 60px;
+            background: #8B4513;
+            border-radius: 0 0 15px 15px;
+            transition: left 0.1s linear;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .basket::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            width: 100px;
+            height: 20px;
+            background: #8B4513;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .basket::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 15px;
+            width: 90px;
+            height: 15px;
+            background: #A0522D;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .apple {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #FF4444;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: fall linear;
+            z-index: 5;
+        }
+
+        .apple::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 10px;
+            background: #8B4513;
+            border-radius: 2px;
+        }
+
+        .apple::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #228B22;
+            border-radius: 50%;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(600px) rotate(360deg);
+            }
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        button {
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .pause-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .pause-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            display: none;
+        }
+
+        .game-over.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .game-over h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .game-over p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .instructions strong {
+            color: #667eea;
+        }
+
+        @media (max-width: 600px) {
+            .game-area {
+                height: 400px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .basket {
+                width: 100px;
+                height: 50px;
+            }
+
+            .apple {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🍎 사과 게임 🍎</h1>
+        
+        <div class="instructions">
+            <strong>게임 방법:</strong> 마우스나 화살표 키(← →)로 바구니를 움직여 떨어지는 사과를 받으세요!
+        </div>
+
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">점수</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">레벨</div>
+                <div class="score-value" id="level">1</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">생명</div>
+                <div class="score-value" id="lives">❤️❤️❤️</div>
+            </div>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <div class="basket" id="basket"></div>
+            <div class="game-over" id="gameOver">
+                <h2>게임 오버!</h2>
+                <p>최종 점수: <span id="finalScore">0</span></p>
+                <p>레벨: <span id="finalLevel">1</span></p>
+                <button class="start-btn" onclick="restartGame()">다시 시작</button>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="start-btn" id="startBtn" onclick="startGame()">게임 시작</button>
+            <button class="pause-btn" id="pauseBtn" onclick="togglePause()" disabled>일시정지</button>
+        </div>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const basket = document.getElementById('basket');
+        const scoreElement = document.getElementById('score');
+        const levelElement = document.getElementById('level');
+        const livesElement = document.getElementById('lives');
+        const gameOverDiv = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        const finalLevelElement = document.getElementById('finalLevel');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+
+        let gameState = {
+            score: 0,
+            level: 1,
+            lives: 3,
+            isPlaying: false,
+            isPaused: false,
+            basketPosition: 50,
+            appleInterval: null,
+            gameSpeed: 2000
+        };
+
+        // 바구니 위치 초기화
+        function initBasket() {
+            basket.style.left = '50%';
+            gameState.basketPosition = 50;
+        }
+
+        initBasket();
+
+        // 바구니 이동
+        function moveBasket(direction) {
+            if (!gameState.isPlaying || gameState.isPaused) return;
+
+            const moveAmount = 2;
+            if (direction === 'left' && gameState.basketPosition > 5) {
+                gameState.basketPosition -= moveAmount;
+            } else if (direction === 'right' && gameState.basketPosition < 95) {
+                gameState.basketPosition += moveAmount;
+            }
+            basket.style.left = gameState.basketPosition + '%';
+        }
+
+        // 키보드 이벤트
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                moveBasket('left');
+            } else if (e.key === 'ArrowRight') {
+                moveBasket('right');
+            }
+        });
+
+        // 마우스 이벤트
+        gameArea.addEventListener('mousemove', (e) => {
+            if (!gameState.isPlaying || gameState.isPaused) return;
+            const rect = gameArea.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const percentage = (mouseX / rect.width) * 100;
+            gameState.basketPosition = Math.max(5, Math.min(95, percentage));
+            basket.style.left = gameState.basketPosition + '%';
+        });
+
+        // 사과 생성
+        function createApple() {
+            if (!gameState.isPlaying || gameState.isPaused) return;
+
+            const apple = document.createElement('div');
+            apple.className = 'apple';
+            const randomX = Math.random() * 80 + 10; // 10% ~ 90%
+            apple.style.left = randomX + '%';
+            apple.style.animationDuration = (3000 - gameState.level * 100) + 'ms';
+
+            gameArea.appendChild(apple);
+
+            // 사과가 바닥에 닿았는지 확인
+            const checkCollision = setInterval(() => {
+                if (!gameState.isPlaying || gameState.isPaused) {
+                    clearInterval(checkCollision);
+                    return;
+                }
+
+                const appleRect = apple.getBoundingClientRect();
+                const basketRect = basket.getBoundingClientRect();
+                const gameAreaRect = gameArea.getBoundingClientRect();
+
+                // 바구니와 충돌 체크
+                if (appleRect.bottom >= basketRect.top &&
+                    appleRect.left < basketRect.right &&
+                    appleRect.right > basketRect.left &&
+                    appleRect.top < basketRect.bottom) {
+                    // 사과를 잡았음!
+                    catchApple(apple);
+                    clearInterval(checkCollision);
+                } else if (appleRect.bottom >= gameAreaRect.bottom) {
+                    // 사과를 놓쳤음!
+                    missApple(apple);
+                    clearInterval(checkCollision);
+                }
+            }, 10);
+        }
+
+        // 사과 잡기
+        function catchApple(apple) {
+            apple.remove();
+            gameState.score += 10;
+            scoreElement.textContent = gameState.score;
+
+            // 레벨 업 (100점마다)
+            const newLevel = Math.floor(gameState.score / 100) + 1;
+            if (newLevel > gameState.level) {
+                gameState.level = newLevel;
+                levelElement.textContent = gameState.level;
+                // 게임 속도 증가
+                clearInterval(gameState.appleInterval);
+                gameState.gameSpeed = Math.max(500, 2000 - gameState.level * 100);
+                gameState.appleInterval = setInterval(createApple, gameState.gameSpeed);
+            }
+        }
+
+        // 사과 놓치기
+        function missApple(apple) {
+            apple.remove();
+            gameState.lives--;
+            updateLivesDisplay();
+
+            if (gameState.lives <= 0) {
+                endGame();
+            }
+        }
+
+        // 생명 표시 업데이트
+        function updateLivesDisplay() {
+            const hearts = '❤️'.repeat(Math.max(0, gameState.lives));
+            livesElement.textContent = hearts || '💔';
+        }
+
+        // 게임 시작
+        function startGame() {
+            if (gameState.isPlaying) return;
+
+            gameState.isPlaying = true;
+            gameState.isPaused = false;
+            gameState.score = 0;
+            gameState.level = 1;
+            gameState.lives = 3;
+            gameState.gameSpeed = 2000;
+
+            scoreElement.textContent = 0;
+            levelElement.textContent = 1;
+            updateLivesDisplay();
+            gameOverDiv.classList.remove('show');
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+
+            initBasket();
+
+            // 사과 생성 시작
+            gameState.appleInterval = setInterval(createApple, gameState.gameSpeed);
+        }
+
+        // 게임 일시정지/재개
+        function togglePause() {
+            if (!gameState.isPlaying) return;
+
+            gameState.isPaused = !gameState.isPaused;
+            pauseBtn.textContent = gameState.isPaused ? '계속하기' : '일시정지';
+        }
+
+        // 게임 종료
+        function endGame() {
+            gameState.isPlaying = false;
+            clearInterval(gameState.appleInterval);
+            finalScoreElement.textContent = gameState.score;
+            finalLevelElement.textContent = gameState.level;
+            gameOverDiv.classList.add('show');
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            pauseBtn.textContent = '일시정지';
+
+            // 모든 사과 제거
+            const apples = document.querySelectorAll('.apple');
+            apples.forEach(apple => apple.remove());
+        }
+
+        // 게임 재시작
+        function restartGame() {
+            endGame();
+            setTimeout(startGame, 100);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기업 소개</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* 네비게이션 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #4a90e2;
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('https://img.freepik.com/free-photo/beautiful-architecture-business-office-building-exterior_74190-2472.jpg?semt=ais_hybrid&w=740&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 섹션 공통 스타일 */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        /* 회사 소개 */
+        .about {
+            background: #f8f9fa;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .about-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 300px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        /* 서비스 */
+        .services {
+            background: white;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        /* 특징 */
+        .features {
+            background: #f8f9fa;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 연락처 */
+        .contact {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .contact .section-title {
+            color: white;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .contact-item {
+            padding: 1.5rem;
+        }
+
+        .contact-item h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        /* 푸터 */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            section {
+                padding: 3rem 1rem;
+            }
+        }
+
+        /* 스무스 스크롤 */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav>
+        <ul>
+            <li><a href="#home">홈</a></li>
+            <li><a href="#about">회사소개</a></li>
+            <li><a href="#services">서비스</a></li>
+            <li><a href="#features">특징</a></li>
+            <li><a href="#contact">연락처</a></li>
+        </ul>
+    </nav>
+
+    <!-- 히어로 섹션 -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>혁신적인 솔루션을 제공합니다</h1>
+            <p>고객의 성공을 위한 최고의 파트너</p>
+            <a href="#contact" class="cta-button">문의하기</a>
+        </div>
+    </section>
+
+    <!-- 회사 소개 -->
+    <section id="about" class="about">
+        <h2 class="section-title">회사 소개</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    저희 회사는 고객의 비즈니스 성장을 위해 최고의 솔루션을 제공하는 것을 목표로 합니다.
+                    전문성과 혁신을 바탕으로 다양한 산업 분야에서 신뢰받는 파트너로 성장해왔습니다.
+                </p>
+                <p style="margin-top: 1rem;">
+                    우리는 고객 중심의 서비스를 제공하며, 지속적인 혁신과 개선을 통해 
+                    더 나은 가치를 창출하고자 합니다. 함께 성장하고 성공하는 파트너십을 구축하겠습니다.
+                </p>
+            </div>
+            <div class="about-image">
+                회사 비전 이미지
+            </div>
+        </div>
+    </section>
+
+    <!-- 서비스 -->
+    <section id="services" class="services">
+        <h2 class="section-title">주요 서비스</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">💼</div>
+                <h3>컨설팅</h3>
+                <p>전문적인 비즈니스 컨설팅을 통해 고객의 성장을 지원합니다.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🚀</div>
+                <h3>솔루션 개발</h3>
+                <p>최신 기술을 활용한 맞춤형 솔루션을 개발하여 제공합니다.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🎯</div>
+                <h3>전략 수립</h3>
+                <p>효과적인 비즈니스 전략을 수립하고 실행을 지원합니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 특징 -->
+    <section id="features" class="features">
+        <h2 class="section-title">우리의 강점</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-number">10+</div>
+                <h3>경력</h3>
+                <p>10년 이상의 풍부한 경험</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-number">500+</div>
+                <h3>고객</h3>
+                <p>500개 이상의 만족한 고객</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-number">98%</div>
+                <h3>만족도</h3>
+                <p>고객 만족도 98% 달성</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-number">24/7</div>
+                <h3>지원</h3>
+                <p>언제나 고객을 지원합니다</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 연락처 -->
+    <section id="contact" class="contact">
+        <h2 class="section-title">연락처</h2>
+        <div class="contact-info">
+            <div class="contact-item">
+                <h3>📧 이메일</h3>
+                <p>contact@company.com</p>
+            </div>
+            <div class="contact-item">
+                <h3>📞 전화</h3>
+                <p>02-1234-5678</p>
+            </div>
+            <div class="contact-item">
+                <h3>📍 주소</h3>
+                <p>서울특별시 강남구 테헤란로 123</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer>
+        <p>&copy; 2024 회사명. All rights reserved.</p>
+    </footer>
+</body>
+</html>
